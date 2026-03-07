@@ -33,6 +33,7 @@ Orchestrator (intent routing via keyword matching)
 
 All agent runs logged to MLflow: latency, tool calls, profile deltas, tokens
 ```
+![Alt text](./architechture.png)
 
 ### Key Design Principles
 

@@ -11,7 +11,7 @@ const FEATURES = [
     title: "AI Benefits Assistant",
     description:
       "Ask anything about your health cover. File claims and book appointments through natural conversation.",
-    color: "from-sky-500 to-blue-700",
+    tone: "bg-kota-green/15 text-kota-green",
   },
   {
     href: "/plans",
@@ -19,7 +19,7 @@ const FEATURES = [
     title: "Smart Plan Picker",
     description:
       "Compare all 5 insurance plans with personalised recommendations based on your health needs.",
-    color: "from-cyan-500 to-teal-600",
+    tone: "bg-blue-500/15 text-blue-300",
   },
   {
     href: "/pension",
@@ -27,7 +27,7 @@ const FEATURES = [
     title: "Engaging Pension Calculator",
     description:
       "See your retirement as a lifestyle, not just a number. Interactive, visual, and actually motivating.",
-    color: "from-blue-500 to-indigo-700",
+    tone: "bg-teal-500/15 text-teal-300",
   },
 ];
 
@@ -42,41 +42,40 @@ export default function HomePage() {
   const hasProfile = profileCompletion > 0;
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-kota-dark text-zinc-100">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-linear-to-br from-[#10376d] via-[#1958a8] to-[#1171c2] px-4 py-20 text-white">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-10 left-10 h-64 w-64 rounded-full bg-cyan-100 blur-3xl" />
-          <div className="absolute bottom-10 right-10 h-96 w-96 rounded-full bg-blue-200 blur-3xl" />
-
+      <section className="relative overflow-hidden px-4 py-16">
+        <div className="absolute inset-0 opacity-40">
+          <div className="absolute top-0 left-0 h-64 w-64 rounded-full bg-kota-green/20 blur-3xl" />
+          <div className="absolute right-0 bottom-0 h-80 w-80 rounded-full bg-blue-500/15 blur-3xl" />
         </div>
-        <div className="relative mx-auto max-w-4xl text-center">
+        <div className="kota-panel-strong relative mx-auto max-w-5xl border-white/10 bg-kota-charcoal/80 p-10 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <span className="inline-block rounded-full bg-white/20 px-4 py-1.5 text-sm font-medium backdrop-blur mb-6">
+            <span className="kota-pill mb-6 inline-block border-kota-green/35 bg-kota-green/10 px-4 py-1.5 text-sm font-medium text-kota-green">
               AI-powered benefits &amp; pension platform
             </span>
-            <h1 className="kota-section-title mb-6 text-5xl font-bold tracking-tight">
+            <h1 className="mb-6 text-5xl font-bold tracking-tight text-zinc-100">
               Your benefits, finally{" "}
-              <span className="text-cyan-100">making sense</span>
+              <span className="text-kota-green">making sense</span>
             </h1>
-            <p className="mx-auto mb-10 max-w-2xl text-xl text-blue-100">
+            <p className="mx-auto mb-10 max-w-2xl text-lg text-zinc-300">
               One platform to understand your health insurance, find the right plan, and see your
               retirement as a real lifestyle — not just a spreadsheet.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link
                 href="/chat"
-                className="kota-btn-secondary px-8 py-3.5 text-base text-blue-800"
+                className="kota-btn-primary px-8 py-3.5 text-base"
               >
                 Start Chatting
               </Link>
               <Link
                 href="/pension"
-                className="rounded-xl border border-white/35 bg-white/10 px-8 py-3.5 text-base font-semibold text-white backdrop-blur hover:bg-white/20 transition-all"
+                className="kota-btn-secondary px-8 py-3.5 text-base text-zinc-100"
               >
                 Check My Pension
               </Link>
@@ -87,15 +86,15 @@ export default function HomePage() {
 
       {/* Profile prompt banner */}
       {hasProfile && (
-        <div className="border-b border-[var(--border)] bg-[color:var(--brand-soft)] px-4 py-3">
+        <div className="border-y border-kota-green/20 bg-kota-green/10 px-4 py-3">
           <div className="mx-auto max-w-7xl flex items-center justify-between">
-            <p className="text-sm text-blue-800">
+            <p className="text-sm text-zinc-200">
               <span className="font-semibold">Your profile is {profileCompletion}% complete.</span>{" "}
               {profile.age && `Age ${profile.age}`}{profile.age && profile.salary ? " · " : ""}
               {profile.salary && `€${profile.salary.toLocaleString()}/yr`}
               {" — "}All your data is pre-filled across all three tools.
             </p>
-            <Link href="/chat" className="text-sm font-medium text-blue-700 hover:text-blue-900">
+            <Link href="/chat" className="text-sm font-medium text-kota-green hover:text-white">
               Continue chatting →
             </Link>
           </div>
@@ -104,6 +103,7 @@ export default function HomePage() {
 
       {/* Features */}
       <section className="mx-auto max-w-7xl px-4 py-16">
+        <h2 className="mb-8 text-center text-2xl font-bold text-zinc-100">Everything in one flow</h2>
         <div className="grid md:grid-cols-3 gap-6">
           {FEATURES.map((f, i) => (
             <motion.div
@@ -114,18 +114,18 @@ export default function HomePage() {
             >
               <Link
                 href={f.href}
-                className="kota-panel block p-6 transition-all group hover:-translate-y-1"
+                className="kota-panel block border-white/10 bg-kota-card/70 p-6 transition-all group hover:-translate-y-1"
               >
                 <div
-                  className={`inline-flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-br ${f.color} text-2xl mb-4`}
+                  className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl text-2xl ${f.tone}`}
                 >
                   {f.icon}
                 </div>
-                <h3 className="mb-2 text-lg font-semibold text-slate-900 transition-colors group-hover:text-blue-700">
+                <h3 className="mb-2 text-lg font-semibold text-zinc-100 transition-colors group-hover:text-kota-green">
                   {f.title}
                 </h3>
-                <p className="text-sm leading-relaxed text-slate-600">{f.description}</p>
-                <div className="mt-4 text-sm font-medium text-blue-600 group-hover:text-blue-800">
+                <p className="text-sm leading-relaxed text-zinc-300">{f.description}</p>
+                <div className="mt-4 text-sm font-medium text-kota-green group-hover:text-white">
                   Get started →
                 </div>
               </Link>
@@ -135,43 +135,43 @@ export default function HomePage() {
       </section>
 
       {/* How it works */}
-      <section className="border-y border-[var(--border)] bg-white/75 px-4 py-16">
-        <div className="mx-auto max-w-4xl text-center mb-12">
-          <h2 className="kota-section-title mb-4 text-3xl font-bold">No forms. Just conversation.</h2>
-          <p className="text-lg text-slate-600">
+      <section className="px-4 py-4">
+        <div className="kota-panel mx-auto max-w-6xl border-white/10 bg-kota-charcoal/70 p-10">
+          <div className="mx-auto max-w-4xl text-center mb-12">
+            <h2 className="mb-4 text-3xl font-bold text-zinc-100">No forms. Just conversation.</h2>
+            <p className="text-lg text-zinc-300">
             As you chat with Futuro, it quietly builds your profile. That data then powers your
             personalised plan recommendation and pension calculation — automatically.
-          </p>
-        </div>
-        <div className="mx-auto max-w-3xl flex flex-col md:flex-row items-start gap-8">
-          {[
-            { step: "1", title: "Chat naturally", desc: "Ask anything about your health cover. Futuro learns about you as you talk." },
-            { step: "2", title: "Profile builds silently", desc: "Age, salary, family needs — extracted from conversation, never from a form." },
-            { step: "3", title: "Everything pre-filled", desc: "Visit Plans or Pension — your data is already there. No re-entry, ever." },
-          ].map(({ step, title, desc }) => (
-            <div key={step} className="flex gap-4 flex-1">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-700 text-sm font-bold text-white">
-                {step}
+            </p>
+          </div>
+          <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-3">
+            {[
+              { step: "1", title: "Chat naturally", desc: "Ask anything about your health cover. Futuro learns about you as you talk." },
+              { step: "2", title: "Profile builds silently", desc: "Age, salary, family needs — extracted from conversation, never from a form." },
+              { step: "3", title: "Everything pre-filled", desc: "Visit Plans or Pension — your data is already there. No re-entry, ever." },
+            ].map(({ step, title, desc }) => (
+              <div key={step} className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-full bg-kota-green text-sm font-bold text-kota-dark">
+                  {step}
+                </div>
+                <h4 className="mb-1 font-semibold text-zinc-100">{title}</h4>
+                <p className="text-sm text-zinc-300">{desc}</p>
               </div>
-              <div>
-                <h4 className="mb-1 font-semibold text-slate-900">{title}</h4>
-                <p className="text-sm text-slate-600">{desc}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Personas */}
       <section className="mx-auto max-w-7xl px-4 py-16">
-        <h2 className="kota-section-title mb-8 text-center text-2xl font-bold">Built for everyone</h2>
+        <h2 className="mb-8 text-center text-2xl font-bold text-zinc-100">Built for everyone</h2>
         <div className="grid md:grid-cols-3 gap-6">
           {PERSONAS.map((p) => (
-            <div key={p.name} className="kota-panel p-6">
+            <div key={p.name} className="kota-panel border-white/10 bg-kota-card/70 p-6">
               <div className="text-4xl mb-3">{p.emoji}</div>
-              <div className="mb-1 text-sm font-semibold text-blue-700">{p.role}</div>
-              <div className="mb-2 font-semibold text-slate-900">{p.name}</div>
-              <p className="text-sm text-slate-600">{p.desc}</p>
+              <div className="mb-1 text-sm font-semibold text-kota-green">{p.role}</div>
+              <div className="mb-2 font-semibold text-zinc-100">{p.name}</div>
+              <p className="text-sm text-zinc-300">{p.desc}</p>
             </div>
           ))}
         </div>

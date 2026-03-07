@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUserProfile } from "@/context/UserProfileContext";
@@ -18,8 +19,15 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 border-b border-white/10 bg-kota-dark/90 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
         <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-kota-green text-kota-dark text-sm font-bold shadow-md shadow-emerald-400/30">
-            F
+          <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-lg border border-white/10 bg-white/5">
+            <Image
+              src="/futuro-logo.svg"
+              alt="Futuro logo"
+              width={28}
+              height={28}
+              className="h-7 w-7 object-contain"
+              priority
+            />
           </div>
           <span className="text-lg font-semibold text-white">Futuro</span>
         </Link>

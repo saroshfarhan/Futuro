@@ -3,7 +3,8 @@ Benefits Agent — answers health insurance questions using plan data tools.
 Uses LangGraph ReAct agent with Gemini. All benefit lookups are deterministic tool calls.
 """
 import os
-from langchain_google_genai import ChatGoogleGenerativeAI
+from functools import lru_cache
+from langchain_google_vertexai import ChatVertexAI
 from langgraph.prebuilt import create_react_agent
 from langchain_core.messages import HumanMessage, AIMessage
 from backend.tools.plan_tools import (
@@ -56,6 +57,18 @@ TOOLS = [
 ]
 
 
+@lru_cache(maxsize=1)
+def _get_benefits_agent():
+    """Cached ReAct agent — built once, reused across requests."""
+    llm = ChatVertexAI(
+        model="gemini-2.0-flash",
+        project=os.environ.get("GOOGLE_CLOUD_PROJECT"),
+        location=os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1"),
+        temperature=0.3,
+    )
+    return create_react_agent(llm, TOOLS, prompt=BENEFITS_SYSTEM)
+
+
 def run_benefits_agent(
     message: str,
     user_profile: dict,
@@ -66,13 +79,7 @@ def run_benefits_agent(
     Run the benefits agent for a user message.
     Returns response text and any pending action (for HITL).
     """
-    llm = ChatGoogleGenerativeAI(
-        model="gemini-2.0-flash",
-        google_api_key=os.environ.get("GOOGLE_API_KEY"),
-        temperature=0.3,
-    )
-
-    agent = create_react_agent(llm, TOOLS, prompt=BENEFITS_SYSTEM)
+    agent = _get_benefits_agent()
 
     # Build messages: history + context + current message
     history_text = "\n".join(

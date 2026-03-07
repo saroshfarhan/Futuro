@@ -4,6 +4,7 @@ Also runs the profile extractor in parallel on every message.
 Wraps everything in MLflow tracking.
 """
 import os
+import re
 import time
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
@@ -12,6 +13,17 @@ from backend.agents.profile_extractor import update_profile_from_message
 from backend.agents.benefits_agent import run_benefits_agent
 from backend.agents.pension_agent import run_pension_agent
 from backend.mlflow_logger import log_chat_turn
+from backend.models.user_profile import UserProfileDelta
+
+# Messages shorter than this or matching trivial patterns skip profile extraction
+_TRIVIAL_RE = re.compile(
+    r"^\s*(hi|hello|hey|thanks|thank you|ok|okay|sure|yes|no|yep|nope|got it|great|cool|bye|good|nice)\W*$",
+    re.IGNORECASE,
+)
+
+
+def _empty_delta() -> "UserProfileDelta":
+    return UserProfileDelta()
 
 PENSION_KEYWORDS = [
     "pension", "retire", "retirement", "savings", "pot", "prsa", "prsa",
@@ -52,13 +64,15 @@ def process_chat(
     """
     start_time = time.time()
 
-    # Run profile extraction and intent detection in parallel
-    with ThreadPoolExecutor(max_workers=2) as executor:
-        profile_future = executor.submit(
-            update_profile_from_message, message, current_profile
-        )
-        intent = _detect_intent(message)
-        updated_profile, delta, profile_was_updated = profile_future.result()
+    intent = _detect_intent(message)
+
+    # Skip profile extraction for trivial messages (saves 1 Gemini call per greeting/ack)
+    skip_extraction = len(message.strip()) < 10 or bool(_TRIVIAL_RE.match(message))
+
+    if skip_extraction:
+        updated_profile, delta, profile_was_updated = current_profile, _empty_delta(), False
+    else:
+        updated_profile, delta, profile_was_updated = update_profile_from_message(message, current_profile)
 
     # Route to correct agent
     pending_action = None

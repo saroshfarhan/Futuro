@@ -1,17 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { api } from "@/lib/api";
 
 const PLAN_TIERS = ["Basic", "Essential", "Standard", "Plus", "Premium"];
 const PLAN_COLORS = [
-  { bg: "bg-gray-50", border: "border-gray-200", badge: "bg-gray-100 text-gray-700", accent: "text-gray-600" },
-  { bg: "bg-blue-50", border: "border-blue-200", badge: "bg-blue-100 text-blue-700", accent: "text-blue-600" },
-  { bg: "bg-indigo-50", border: "border-indigo-200", badge: "bg-indigo-100 text-indigo-700", accent: "text-indigo-600" },
-  { bg: "bg-purple-50", border: "border-purple-200", badge: "bg-purple-100 text-purple-700", accent: "text-purple-600" },
-  { bg: "bg-amber-50", border: "border-amber-200", badge: "bg-amber-100 text-amber-700 font-semibold", accent: "text-amber-600" },
+  { badge: "bg-white/10 text-zinc-200", accent: "text-zinc-300" },
+  { badge: "bg-blue-500/15 text-blue-300", accent: "text-blue-300" },
+  { badge: "bg-teal-500/15 text-teal-300", accent: "text-teal-300" },
+  { badge: "bg-cyan-500/15 text-cyan-300", accent: "text-cyan-300" },
+  { badge: "bg-kota-green/15 text-kota-green font-semibold", accent: "text-kota-green" },
 ];
 
 const BENEFIT_ICONS: Record<string, string> = {
@@ -51,14 +51,14 @@ interface RecommendResult {
 }
 
 export default function PlansPage() {
-  const { profile, userId } = useUserProfile();
+  const { profile } = useUserProfile();
   const [plans, setPlans] = useState<PlanSummary[]>([]);
   const [recommendation, setRecommendation] = useState<RecommendResult | null>(null);
   const [selectedPriorities, setSelectedPriorities] = useState<string[]>([]);
   const [budgetSensitive, setBudgetSensitive] = useState(false);
   const [comparingPlans, setComparingPlans] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
-  const [recLoading, setRecLoading] = useState(false);
+  const [, setRecLoading] = useState(false);
 
   // Seed priorities from profile
   useEffect(() => {
@@ -74,7 +74,7 @@ export default function PlansPage() {
     });
   }, []);
 
-  const getRecommendation = async () => {
+  const getRecommendation = useCallback(async () => {
     if (selectedPriorities.length === 0) return;
     setRecLoading(true);
     try {
@@ -86,13 +86,11 @@ export default function PlansPage() {
     } finally {
       setRecLoading(false);
     }
-  };
+  }, [selectedPriorities, budgetSensitive]);
 
   useEffect(() => {
-    if (selectedPriorities.length > 0) {
-      getRecommendation();
-    }
-  }, [selectedPriorities, budgetSensitive]);
+    if (selectedPriorities.length > 0) getRecommendation();
+  }, [selectedPriorities.length, getRecommendation]);
 
   const togglePriority = (key: string) => {
     setSelectedPriorities((prev) =>
@@ -121,7 +119,7 @@ export default function PlansPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-gray-400 text-sm">Loading plans…</div>
+        <div className="text-sm text-slate-400">Loading plans…</div>
       </div>
     );
   }
@@ -130,17 +128,17 @@ export default function PlansPage() {
     <div className="mx-auto max-w-7xl px-4 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Choose Your Plan</h1>
-        <p className="text-gray-600">
+        <h1 className="kota-section-title mb-2 text-3xl font-bold">Choose Your Plan</h1>
+        <p className="text-slate-600">
           {profile.health_priorities && profile.health_priorities.length > 0
-            ? `Based on your profile, we've pre-selected your priorities. Adjust below to explore.`
+            ? "Based on your profile, we have pre-selected your priorities. Adjust below to explore."
             : "Select your health priorities to get a personalised recommendation."}
         </p>
       </div>
 
       {/* Priority filters */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-5 mb-6 shadow-sm">
-        <h2 className="text-sm font-semibold text-gray-700 mb-3">What matters most to you?</h2>
+      <div className="kota-panel mb-6 p-5">
+        <h2 className="mb-3 text-sm font-semibold text-slate-700">What matters most to you?</h2>
         <div className="flex flex-wrap gap-2 mb-4">
           {PRIORITY_OPTIONS.map(({ key, label }) => (
             <button
@@ -148,8 +146,8 @@ export default function PlansPage() {
               onClick={() => togglePriority(key)}
               className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
                 selectedPriorities.includes(key)
-                  ? "bg-indigo-600 text-white"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  ? "bg-blue-600 text-white"
+                  : "kota-pill text-slate-600 hover:bg-blue-50 hover:text-blue-700"
               }`}
             >
               {label}
@@ -161,9 +159,9 @@ export default function PlansPage() {
             type="checkbox"
             checked={budgetSensitive}
             onChange={(e) => setBudgetSensitive(e.target.checked)}
-            className="h-4 w-4 rounded border-gray-300 text-indigo-600"
+            className="h-4 w-4 rounded border-slate-300 text-blue-600"
           />
-          <span className="text-sm text-gray-600">I'm budget-conscious — show cheaper options first</span>
+          <span className="text-sm text-slate-600">I&apos;m budget-conscious — show cheaper options first</span>
         </label>
       </div>
 
@@ -174,7 +172,7 @@ export default function PlansPage() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="mb-6 rounded-2xl bg-linear-to-r from-indigo-600 to-purple-600 p-5 text-white shadow-lg"
+            className="kota-panel-strong mb-6 bg-linear-to-r from-[#0f4f97] to-[#1570ef] p-5 text-white"
           >
             <div className="flex items-start gap-4">
               <div className="shrink-0 h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center text-2xl font-bold">
@@ -184,14 +182,14 @@ export default function PlansPage() {
                 <p className="font-semibold text-lg mb-1">
                   We recommend Plan {recommendation.recommended_plan.plan_id} — {PLAN_TIERS[recommendation.recommended_plan.plan_id - 1]}
                 </p>
-                <p className="text-indigo-100 text-sm">{recommendation.recommendation_reason}</p>
+                <p className="text-blue-100 text-sm">{recommendation.recommendation_reason}</p>
                 {recommendation.recommended_plan.reasoning?.slice(0, 2).map((r, i) => (
-                  <p key={i} className="text-indigo-200 text-xs mt-1">• {r}</p>
+                  <p key={i} className="mt-1 text-xs text-blue-200">• {r}</p>
                 ))}
               </div>
               <div className="shrink-0 text-right">
                 <div className="text-3xl font-bold">{recommendation.recommended_plan.score}</div>
-                <div className="text-indigo-200 text-xs">match score</div>
+                <div className="text-xs text-blue-200">match score</div>
               </div>
             </div>
           </motion.div>
@@ -206,28 +204,42 @@ export default function PlansPage() {
           const recommended = isRecommended(plan.id);
           const runnerUp = isRunnerUp(plan.id);
           const comparing = comparingPlans.includes(plan.id);
+          const scoreTone = recommended
+            ? "text-kota-green"
+            : runnerUp
+            ? "text-blue-300"
+            : comparing
+            ? "text-teal-300"
+            : colors.accent;
+          const scoreBar = recommended
+            ? "bg-kota-green"
+            : runnerUp
+            ? "bg-blue-400"
+            : comparing
+            ? "bg-teal-400"
+            : "bg-zinc-400";
 
           return (
             <motion.div
               key={plan.id}
               layout
-              className={`relative rounded-2xl border-2 p-4 transition-all ${
+              className={`relative rounded-2xl border p-4 backdrop-blur-sm transition-all ${
                 recommended
-                  ? "border-indigo-400 shadow-lg shadow-indigo-100 scale-[1.02]"
+                  ? "scale-[1.02] border-kota-green shadow-[0_0_26px_rgba(0,200,150,0.26)]"
                   : runnerUp
-                  ? "border-purple-300 shadow-md"
+                  ? "border-blue-400/80 shadow-[0_0_18px_rgba(59,130,246,0.22)]"
                   : comparing
-                  ? "border-emerald-400 shadow-md"
-                  : `${colors.border}`
-              } ${colors.bg}`}
+                  ? "border-teal-400/80 shadow-[0_0_18px_rgba(45,212,191,0.2)]"
+                  : "border-white/10 hover:border-white/20"
+              } bg-white/5`}
             >
               {recommended && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-indigo-600 px-3 py-0.5 text-xs font-semibold text-white whitespace-nowrap">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-kota-green px-3 py-0.5 text-xs font-semibold text-kota-dark">
                   ⭐ Best for you
                 </div>
               )}
               {runnerUp && !recommended && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-purple-500 px-3 py-0.5 text-xs font-semibold text-white whitespace-nowrap">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-blue-500 px-3 py-0.5 text-xs font-semibold text-white">
                   Runner up
                 </div>
               )}
@@ -236,16 +248,16 @@ export default function PlansPage() {
                 <span className={`inline-block rounded-full px-2 py-0.5 text-xs ${colors.badge} mb-2`}>
                   {plan.tier}
                 </span>
-                <h3 className="font-bold text-gray-900">{plan.name}</h3>
+                <h3 className="font-bold text-zinc-100">{plan.name}</h3>
                 {score !== undefined && (
                   <div className="mt-1 flex items-center gap-1.5">
-                    <div className="flex-1 h-1.5 rounded-full bg-gray-200 overflow-hidden">
+                    <div className="flex-1 h-1.5 overflow-hidden rounded-full bg-white/10">
                       <div
-                        className={`h-full rounded-full ${recommended ? "bg-indigo-500" : "bg-gray-400"}`}
+                        className={`h-full rounded-full ${scoreBar}`}
                         style={{ width: `${score}%` }}
                       />
                     </div>
-                    <span className={`text-xs font-medium ${colors.accent}`}>{score}</span>
+                    <span className={`text-xs font-semibold ${scoreTone}`}>{score}</span>
                   </div>
                 )}
               </div>
@@ -256,8 +268,8 @@ export default function PlansPage() {
                     <div className="flex items-start gap-1.5">
                       <span className="text-xs shrink-0 mt-0.5">{BENEFIT_ICONS[key] || "•"}</span>
                       <div>
-                        <div className="text-xs text-gray-500 capitalize">{key.replace("_", " ")}</div>
-                        <div className="text-xs font-medium text-gray-800 leading-tight">{val.split("\n")[0].slice(0, 60)}</div>
+                        <div className="text-xs text-zinc-400 capitalize">{key.replace("_", " ")}</div>
+                        <div className="text-xs font-medium text-zinc-100 leading-tight">{val.split("\n")[0].slice(0, 60)}</div>
                       </div>
                     </div>
                   </div>
@@ -268,8 +280,8 @@ export default function PlansPage() {
                 onClick={() => toggleCompare(plan.id)}
                 className={`w-full rounded-lg py-1.5 text-xs font-medium transition-colors ${
                   comparing
-                    ? "bg-emerald-600 text-white hover:bg-emerald-700"
-                    : "border border-gray-300 bg-white text-gray-700 hover:border-indigo-300 hover:text-indigo-700"
+                    ? "kota-btn-primary"
+                    : "kota-btn-secondary text-zinc-100 hover:text-kota-green"
                 }`}
               >
                 {comparing ? "✓ Comparing" : "Compare"}
@@ -286,9 +298,9 @@ export default function PlansPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="bg-white rounded-2xl border border-emerald-200 p-6 shadow-md"
+            className="kota-panel p-6"
           >
-            <h2 className="font-bold text-gray-900 mb-4 text-lg">
+            <h2 className="mb-4 text-lg font-bold text-slate-900">
               Plan {comparingPlans[0]} vs Plan {comparingPlans[1]}
             </h2>
             {plans.length > 0 && (() => {
@@ -299,21 +311,21 @@ export default function PlansPage() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr>
-                        <th className="text-left py-2 pr-4 text-gray-500 font-medium w-1/3">Benefit</th>
-                        <th className="text-left py-2 pr-4 text-indigo-700 font-semibold">{planA.name} ({planA.tier})</th>
-                        <th className="text-left py-2 text-purple-700 font-semibold">{planB.name} ({planB.tier})</th>
+                        <th className="w-1/3 py-2 pr-4 text-left font-medium text-slate-500">Benefit</th>
+                        <th className="py-2 pr-4 text-left font-semibold text-blue-700">{planA.name} ({planA.tier})</th>
+                        <th className="py-2 text-left font-semibold text-cyan-700">{planB.name} ({planB.tier})</th>
                       </tr>
                     </thead>
                     <tbody>
                       {Object.keys(planA.key_benefits).map((key) => (
-                        <tr key={key} className="border-t border-gray-50">
-                          <td className="py-2.5 pr-4 text-gray-500 capitalize font-medium">
+                        <tr key={key} className="border-t border-slate-100">
+                          <td className="py-2.5 pr-4 font-medium capitalize text-slate-500">
                             {BENEFIT_ICONS[key]} {key.replace("_", " ")}
                           </td>
-                          <td className="py-2.5 pr-4 text-gray-800">
+                          <td className="py-2.5 pr-4 text-slate-800">
                             {planA.key_benefits[key]?.split("\n")[0] || "—"}
                           </td>
-                          <td className="py-2.5 text-gray-800">
+                          <td className="py-2.5 text-slate-800">
                             {planB.key_benefits[key]?.split("\n")[0] || "—"}
                           </td>
                         </tr>
@@ -325,7 +337,7 @@ export default function PlansPage() {
             })()}
             <button
               onClick={() => setComparingPlans([])}
-              className="mt-4 text-sm text-gray-500 hover:text-gray-700"
+              className="mt-4 text-sm text-slate-500 hover:text-slate-700"
             >
               Clear comparison
             </button>
@@ -334,12 +346,12 @@ export default function PlansPage() {
       </AnimatePresence>
 
       {/* CTA to chat */}
-      <div className="mt-8 rounded-2xl bg-linear-to-br from-gray-900 to-gray-800 p-6 text-white">
+      <div className="kota-panel-strong mt-8 bg-linear-to-br from-[#0f2747] to-[#173b66] p-6 text-white">
         <p className="font-semibold mb-1">Not sure which plan is right for you?</p>
-        <p className="text-gray-400 text-sm mb-3">Chat with Futuro — just describe your situation and we'll guide you to the right plan.</p>
+        <p className="mb-3 text-sm text-blue-100/80">Chat with Futuro — just describe your situation and we will guide you to the right plan.</p>
         <a
           href="/chat"
-          className="inline-block rounded-lg bg-white px-4 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-100 transition-colors"
+          className="kota-btn-secondary inline-block px-4 py-2 text-sm text-blue-800"
         >
           Chat with AI assistant →
         </a>

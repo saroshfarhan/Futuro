@@ -1,26 +1,181 @@
+@config "../tailwind.config.js";
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0a0a;
+  --foreground: #f9fafb;
+  --surface: rgba(255, 255, 255, 0.05);
+  --surface-strong: #16213e;
+  --border: rgba(255, 255, 255, 0.1);
+  --brand: #00c896;
+  --brand-strong: #00b386;
+  --brand-soft: rgba(0, 200, 150, 0.15);
+  --shadow-soft: 0 14px 36px rgba(0, 0, 0, 0.35);
+  --shadow-hard: 0 20px 48px rgba(0, 0, 0, 0.42);
+  --radius-lg: 18px;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), "Inter", "Segoe UI", sans-serif;
+  min-height: 100vh;
+  background-image: radial-gradient(45rem 20rem at 12% -8%, rgba(0, 200, 150, 0.12), transparent 60%);
+}
+
+a {
+  transition: color 160ms ease;
+}
+
+.kota-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(8px);
+}
+
+.kota-panel-strong {
+  background: var(--surface-strong);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-hard);
+}
+
+.kota-pill {
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.kota-btn-primary {
+  background: linear-gradient(135deg, #00c896 0%, #00b386 100%);
+  color: #0a0a0a;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-weight: 600;
+  box-shadow: 0 10px 22px rgba(0, 200, 150, 0.35);
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.kota-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 26px rgba(0, 200, 150, 0.45);
+  background: linear-gradient(135deg, #00b386 0%, #00a97c 100%);
+}
+
+.kota-btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: #f9fafb;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-weight: 600;
+  transition: border-color 160ms ease, color 160ms ease, background 160ms ease;
+}
+
+.kota-btn-secondary:hover {
+  border-color: rgba(0, 200, 150, 0.55);
+  color: #00c896;
+  background: rgba(0, 200, 150, 0.1);
+}
+
+.kota-input {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #1a1a2e;
+  color: #f9fafb;
+  transition: border-color 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+
+.kota-input:focus {
+  border-color: rgba(0, 200, 150, 0.7);
+  box-shadow: 0 0 0 3px rgba(0, 200, 150, 0.2);
+  background: #1f1f36;
+  outline: none;
+}
+
+.kota-section-title {
+  letter-spacing: -0.02em;
+  color: #f9fafb;
+}
+
+.kota-agent-message {
+  color: #fff;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+.kota-user-message {
+  color: #0a0a0a;
+  font-size: 0.875rem;
+}
+
+.kota-big-number {
+  color: #00c896;
+  font-size: 2.25rem;
+  font-weight: 700;
+}
+
+.kota-label {
+  color: #6b7280;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.kota-panel .text-slate-900,
+.kota-panel .text-slate-800,
+.kota-panel .text-slate-700,
+.kota-panel-strong .text-slate-900,
+.kota-panel-strong .text-slate-800,
+.kota-panel-strong .text-slate-700 {
+  color: #f9fafb !important;
+}
+
+.kota-panel .text-slate-600,
+.kota-panel .text-slate-500,
+.kota-panel .text-slate-400,
+.kota-panel-strong .text-slate-600,
+.kota-panel-strong .text-slate-500,
+.kota-panel-strong .text-slate-400 {
+  color: #6b7280 !important;
+}
+
+/* Keep readable dark text inside light sub-cards rendered within dark panels */
+.kota-panel .bg-white,
+.kota-panel-strong .bg-white {
+  color: #0a0a0a;
+}
+
+.kota-panel .bg-white .text-slate-900,
+.kota-panel .bg-white .text-slate-800,
+.kota-panel .bg-white .text-slate-700,
+.kota-panel-strong .bg-white .text-slate-900,
+.kota-panel-strong .bg-white .text-slate-800,
+.kota-panel-strong .bg-white .text-slate-700,
+.kota-panel .bg-white .text-gray-900,
+.kota-panel .bg-white .text-gray-800,
+.kota-panel .bg-white .text-gray-700,
+.kota-panel-strong .bg-white .text-gray-900,
+.kota-panel-strong .bg-white .text-gray-800,
+.kota-panel-strong .bg-white .text-gray-700 {
+  color: #0a0a0a !important;
+}
+
+.kota-panel .bg-white .text-slate-600,
+.kota-panel .bg-white .text-slate-500,
+.kota-panel .bg-white .text-gray-600,
+.kota-panel .bg-white .text-gray-500,
+.kota-panel-strong .bg-white .text-slate-600,
+.kota-panel-strong .bg-white .text-slate-500,
+.kota-panel-strong .bg-white .text-gray-600,
+.kota-panel-strong .bg-white .text-gray-500 {
+  color: #4b5563 !important;
 }

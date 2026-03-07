@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git checkout -b ujwal-stuff)"
+      "Bash(git checkout -b ujwal-stuff)",
+      "Bash(gcloud version)"
     ]
   }
 }

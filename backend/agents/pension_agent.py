@@ -3,7 +3,8 @@ Pension Agent — handles pension questions using deterministic calculation tool
 LLM only handles conversation; all numbers come from pure Python tools.
 """
 import os
-from langchain_google_genai import ChatGoogleGenerativeAI
+from functools import lru_cache
+from langchain_google_vertexai import ChatVertexAI
 from langgraph.prebuilt import create_react_agent
 from langchain_core.messages import HumanMessage, AIMessage
 from backend.tools.pension_tools import (
@@ -37,15 +38,21 @@ When a user asks about pension:
 TOOLS = [calculate_pension, get_lifestyle_bucket, latte_factor, peer_benchmark]
 
 
-def run_pension_agent(message: str, user_profile: dict) -> dict:
-    """Run the pension agent and return structured response."""
-    llm = ChatGoogleGenerativeAI(
+@lru_cache(maxsize=1)
+def _get_pension_agent():
+    """Cached ReAct agent — built once, reused across requests."""
+    llm = ChatVertexAI(
         model="gemini-2.0-flash",
-        google_api_key=os.environ.get("GOOGLE_API_KEY"),
+        project=os.environ.get("GOOGLE_CLOUD_PROJECT"),
+        location=os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1"),
         temperature=0.3,
     )
+    return create_react_agent(llm, TOOLS, prompt=PENSION_SYSTEM)
 
-    agent = create_react_agent(llm, TOOLS, prompt=PENSION_SYSTEM)
+
+def run_pension_agent(message: str, user_profile: dict) -> dict:
+    """Run the pension agent and return structured response."""
+    agent = _get_pension_agent()
 
     full_message = f"User profile: {user_profile}\n\nUser: {message}"
     result = agent.invoke({"messages": [HumanMessage(content=full_message)]})

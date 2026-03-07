@@ -4,9 +4,21 @@ Uses Gemini structured output to extract user profile fields from natural conver
 Never overwrites existing profile fields with None — only updates new info.
 """
 import os
-from langchain_google_genai import ChatGoogleGenerativeAI
+from functools import lru_cache
+from langchain_google_vertexai import ChatVertexAI
 from langchain_core.messages import HumanMessage, SystemMessage
 from backend.models.user_profile import UserProfile, UserProfileDelta
+
+
+@lru_cache(maxsize=1)
+def _get_extractor_llm() -> ChatVertexAI:
+    """Cached LLM instance — created once, reused for every extraction call."""
+    return ChatVertexAI(
+        model="gemini-2.0-flash-lite",
+        project=os.environ.get("GOOGLE_CLOUD_PROJECT"),
+        location=os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1"),
+        temperature=0,
+    )
 
 EXTRACTOR_SYSTEM_PROMPT = """You are a silent profile extraction system for a health insurance platform.
 Your job is to extract personal, financial, and health information from user messages.
@@ -41,11 +53,7 @@ def extract_profile_delta(message: str, current_profile: UserProfile) -> UserPro
     Extract any profile information from a user message.
     Returns a UserProfileDelta with only newly found fields.
     """
-    llm = ChatGoogleGenerativeAI(
-        model="gemini-2.0-flash",
-        google_api_key=os.environ.get("GOOGLE_API_KEY"),
-        temperature=0,
-    )
+    llm = _get_extractor_llm()
 
     context = f"Current known profile: {current_profile.model_dump(exclude_none=True)}"
     messages = [

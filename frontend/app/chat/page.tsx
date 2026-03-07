@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUserProfile } from "@/context/UserProfileContext";
-import { api, type ChatMessage, type PendingAction } from "@/lib/api";
+import { api, type PendingAction } from "@/lib/api";
 
 const QUICK_ACTIONS = [
   "What's covered for physiotherapy?",
@@ -46,6 +46,7 @@ interface Message {
   pending_action?: PendingAction;
   action_result?: { status: string; claim_id?: string; confirmation_number?: string; message?: string };
 }
+type ActionResult = NonNullable<Message["action_result"]>;
 
 function ActionReviewCard({
   action,
@@ -83,11 +84,11 @@ function ActionReviewCard({
     <motion.div
       initial={{ opacity: 0, scale: 0.97 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-4"
+      className="kota-panel mt-3 p-4"
     >
       <div className="flex items-center gap-2 mb-3">
-        <span className="text-amber-600 text-lg">{isClaim ? "🧾" : "📅"}</span>
-        <span className="font-semibold text-amber-800 text-sm">
+        <span className="text-lg text-blue-700">{isClaim ? "🧾" : "📅"}</span>
+        <span className="text-sm font-semibold text-slate-800">
           {isClaim ? "Review Your Claim Before Submitting" : "Review Your Appointment Request"}
         </span>
       </div>
@@ -95,37 +96,37 @@ function ActionReviewCard({
       <div className="grid grid-cols-2 gap-2 mb-4">
         {isClaim ? (
           <>
-            <div className="rounded-lg bg-white p-2.5 border border-amber-100">
-              <div className="text-xs text-gray-500 mb-0.5">Type</div>
-              <div className="font-medium text-gray-900 text-sm capitalize">{action.claim_type?.replace("_", " ")}</div>
+            <div className="rounded-lg border border-[var(--border)] bg-white p-2.5">
+              <div className="kota-label mb-0.5">Type</div>
+              <div className="text-sm font-medium capitalize text-slate-900">{action.claim_type?.replace("_", " ")}</div>
             </div>
-            <div className="rounded-lg bg-white p-2.5 border border-amber-100">
-              <div className="text-xs text-gray-500 mb-0.5">Date</div>
-              <div className="font-medium text-gray-900 text-sm">{action.claim_date}</div>
+            <div className="rounded-lg border border-[var(--border)] bg-white p-2.5">
+              <div className="kota-label mb-0.5">Date</div>
+              <div className="text-sm font-medium text-slate-900">{action.claim_date}</div>
             </div>
-            <div className="rounded-lg bg-white p-2.5 border border-amber-100">
-              <div className="text-xs text-gray-500 mb-0.5">Amount</div>
-              <div className="font-medium text-gray-900 text-sm">€{action.amount?.toFixed(2)}</div>
+            <div className="rounded-lg border border-[var(--border)] bg-white p-2.5">
+              <div className="kota-label mb-0.5">Amount</div>
+              <div className="text-sm font-medium text-slate-900">€{action.amount?.toFixed(2)}</div>
             </div>
-            <div className="rounded-lg bg-white p-2.5 border border-amber-100">
-              <div className="text-xs text-gray-500 mb-0.5">Plan</div>
-              <div className="font-medium text-gray-900 text-sm">Plan {action.plan_id}</div>
+            <div className="rounded-lg border border-[var(--border)] bg-white p-2.5">
+              <div className="kota-label mb-0.5">Plan</div>
+              <div className="text-sm font-medium text-slate-900">Plan {action.plan_id}</div>
             </div>
           </>
         ) : (
           <>
-            <div className="rounded-lg bg-white p-2.5 border border-amber-100">
-              <div className="text-xs text-gray-500 mb-0.5">Type</div>
-              <div className="font-medium text-gray-900 text-sm">{action.appointment_type}</div>
+            <div className="rounded-lg border border-[var(--border)] bg-white p-2.5">
+              <div className="kota-label mb-0.5">Type</div>
+              <div className="text-sm font-medium text-slate-900">{action.appointment_type}</div>
             </div>
-            <div className="rounded-lg bg-white p-2.5 border border-amber-100">
-              <div className="text-xs text-gray-500 mb-0.5">Preferred Date</div>
-              <div className="font-medium text-gray-900 text-sm">{action.preferred_date}</div>
+            <div className="rounded-lg border border-[var(--border)] bg-white p-2.5">
+              <div className="kota-label mb-0.5">Preferred Date</div>
+              <div className="text-sm font-medium text-slate-900">{action.preferred_date}</div>
             </div>
             {action.notes && (
-              <div className="col-span-2 rounded-lg bg-white p-2.5 border border-amber-100">
-                <div className="text-xs text-gray-500 mb-0.5">Notes</div>
-                <div className="font-medium text-gray-900 text-sm">{action.notes}</div>
+              <div className="col-span-2 rounded-lg border border-[var(--border)] bg-white p-2.5">
+                <div className="kota-label mb-0.5">Notes</div>
+                <div className="text-sm font-medium text-slate-900">{action.notes}</div>
               </div>
             )}
           </>
@@ -136,14 +137,14 @@ function ActionReviewCard({
         <button
           onClick={handleConfirm}
           disabled={loading}
-          className="flex-1 rounded-lg bg-amber-600 py-2 text-sm font-semibold text-white hover:bg-amber-700 disabled:opacity-50 transition-colors"
+          className="kota-btn-primary flex-1 py-2 text-sm disabled:opacity-50"
         >
           {loading ? "Submitting…" : isClaim ? "Confirm & Submit Claim" : "Confirm & Book Appointment"}
         </button>
         <button
           onClick={handleCancel}
           disabled={loading}
-          className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 transition-colors"
+          className="kota-btn-secondary px-4 py-2 text-sm disabled:opacity-50"
         >
           Cancel
         </button>
@@ -160,7 +161,7 @@ function MessageBubble({
 }: {
   msg: Message;
   userId: string;
-  onActionConfirm: (msgId: string, result: any) => void;
+  onActionConfirm: (msgId: string, result: ActionResult) => void;
   onActionCancel: (msgId: string) => void;
 }) {
   const isUser = msg.role === "user";
@@ -174,15 +175,15 @@ function MessageBubble({
       <div className={`max-w-[80%] ${isUser ? "order-2" : "order-1"}`}>
         {!isUser && (
           <div className="flex items-center gap-1.5 mb-1.5">
-            <div className="h-6 w-6 rounded-full bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold">F</div>
-            <span className="text-xs text-gray-500 font-medium">Futuro</span>
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-linear-to-br from-sky-500 to-blue-700 text-xs font-bold text-white">F</div>
+            <span className="text-xs font-medium text-zinc-300">Futuro</span>
           </div>
         )}
         <div
           className={`rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
             isUser
-              ? "bg-indigo-600 text-white rounded-br-sm"
-              : "bg-white border border-gray-200 text-gray-800 rounded-bl-sm shadow-sm"
+              ? "kota-user-message rounded-br-sm bg-kota-light shadow-md"
+              : "kota-agent-message rounded-bl-sm border border-white/10 bg-kota-card"
           }`}
         >
           {msg.content}
@@ -202,8 +203,8 @@ function MessageBubble({
         {msg.action_result && (
           <div className={`mt-2 rounded-lg px-3 py-2 text-sm ${
             msg.action_result.status === "error"
-              ? "bg-red-50 text-red-700 border border-red-200"
-              : "bg-emerald-50 text-emerald-700 border border-emerald-200"
+              ? "border border-red-200 bg-red-50 text-red-700"
+              : "border border-teal-200 bg-teal-50 text-teal-700"
           }`}>
             {msg.action_result.status === "cancelled"
               ? "❌ Cancelled — nothing was submitted."
@@ -238,15 +239,15 @@ function ProfileSidebar() {
   );
 
   return (
-    <div className="w-72 shrink-0 border-l border-gray-200 bg-white overflow-y-auto">
-      <div className="p-4 border-b border-gray-100">
+    <div className="w-72 shrink-0 overflow-y-auto border-l border-white/10 bg-[color:var(--surface)] text-zinc-100">
+      <div className="border-b border-[var(--border)] p-4">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-sm font-semibold text-gray-700">Your Profile</h2>
-          <span className="text-xs text-indigo-600 font-medium">{profileCompletion}% complete</span>
+          <h2 className="text-sm font-semibold text-zinc-100">Your Profile</h2>
+          <span className="text-xs font-medium text-kota-green">{profileCompletion}% complete</span>
         </div>
-        <div className="h-1.5 rounded-full bg-gray-100 overflow-hidden">
+        <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
           <motion.div
-            className="h-full rounded-full bg-linear-to-r from-indigo-500 to-purple-500"
+            className="h-full rounded-full bg-kota-green"
             animate={{ width: `${profileCompletion}%` }}
             transition={{ duration: 0.7 }}
           />
@@ -260,9 +261,9 @@ function ProfileSidebar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="mx-3 mt-3 rounded-lg bg-indigo-50 border border-indigo-200 px-3 py-2"
+            className="mx-3 mt-3 rounded-lg border border-kota-green/40 bg-kota-green/10 px-3 py-2"
           >
-            <p className="text-xs text-indigo-700 font-medium">
+            <p className="text-xs font-medium text-kota-green">
               ✨ Picked up: {newFields.join(", ")}
             </p>
           </motion.div>
@@ -271,14 +272,14 @@ function ProfileSidebar() {
 
       <div className="p-4 space-y-2">
         {profileEntries.length === 0 ? (
-          <p className="text-xs text-gray-400 text-center py-8">
+          <p className="py-8 text-center text-xs text-zinc-400">
             Start chatting — your profile will build up here automatically.
           </p>
         ) : (
           profileEntries.map(([key, val]) => (
-            <div key={key} className="flex items-start justify-between gap-2 py-1.5 border-b border-gray-50 last:border-0">
-              <span className="text-xs text-gray-500 shrink-0">{PROFILE_LABELS[key] || key}</span>
-              <span className="text-xs font-medium text-gray-900 text-right">
+            <div key={key} className="flex items-start justify-between gap-2 border-b border-white/10 py-1.5 last:border-0">
+              <span className="shrink-0 text-xs text-zinc-400">{PROFILE_LABELS[key] || key}</span>
+              <span className="text-right text-xs font-medium text-zinc-100">
                 {formatProfileValue(key, val)}
               </span>
             </div>
@@ -290,7 +291,7 @@ function ProfileSidebar() {
         <div className="px-4 pb-4">
           <a
             href="/plans"
-            className="block w-full rounded-lg bg-indigo-50 border border-indigo-200 py-2 text-center text-xs font-semibold text-indigo-700 hover:bg-indigo-100 transition-colors"
+            className="kota-btn-secondary block w-full py-2 text-center text-xs text-zinc-100"
           >
             See your recommended plans →
           </a>
@@ -347,7 +348,7 @@ export default function ChatPage() {
         pending_action: res.pending_action ?? undefined,
       };
       setMessages((prev) => [...prev, assistantMsg]);
-    } catch (err) {
+    } catch {
       setMessages((prev) => [
         ...prev,
         {
@@ -361,7 +362,7 @@ export default function ChatPage() {
     }
   };
 
-  const handleActionConfirm = (msgId: string, result: any) => {
+  const handleActionConfirm = (msgId: string, result: ActionResult) => {
     setMessages((prev) =>
       prev.map((m) => (m.id === msgId ? { ...m, action_result: result } : m))
     );
@@ -374,11 +375,11 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-57px)]">
+    <div className="flex h-[calc(100vh-57px)] bg-kota-charcoal">
       {/* Chat area */}
       <div className="flex flex-1 flex-col">
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-4 py-6 max-w-3xl mx-auto w-full">
+        <div className="mx-auto w-full max-w-3xl flex-1 overflow-y-auto px-4 py-6">
           {messages.map((msg) => (
             <MessageBubble
               key={msg.id}
@@ -392,13 +393,13 @@ export default function ChatPage() {
           {loading && (
             <div className="flex justify-start mb-4">
               <div className="flex items-center gap-1.5">
-                <div className="h-6 w-6 rounded-full bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold">F</div>
-                <div className="rounded-2xl rounded-bl-sm bg-white border border-gray-200 px-4 py-3 shadow-sm">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-linear-to-br from-sky-500 to-blue-700 text-xs font-bold text-white">F</div>
+                <div className="kota-panel rounded-bl-sm px-4 py-3">
                   <div className="flex gap-1.5">
                     {[0, 1, 2].map((i) => (
                       <motion.div
                         key={i}
-                        className="h-2 w-2 rounded-full bg-indigo-400"
+                        className="h-2 w-2 rounded-full bg-blue-400"
                         animate={{ y: [0, -6, 0] }}
                         transition={{ repeat: Infinity, duration: 0.8, delay: i * 0.15 }}
                       />
@@ -412,14 +413,14 @@ export default function ChatPage() {
         </div>
 
         {/* Quick actions */}
-        <div className="border-t border-gray-100 bg-white px-4 pt-3 pb-1 max-w-3xl mx-auto w-full">
+        <div className="mx-auto w-full max-w-3xl border-t border-white/10 bg-[color:var(--surface)] px-4 pt-3 pb-1">
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
             {QUICK_ACTIONS.map((q) => (
               <button
                 key={q}
                 onClick={() => sendMessage(q)}
                 disabled={loading}
-                className="shrink-0 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs text-gray-700 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700 transition-colors disabled:opacity-50"
+                className="kota-pill shrink-0 px-3 py-1.5 text-xs text-zinc-100 transition-colors hover:border-kota-green/50 hover:bg-kota-green/10 hover:text-kota-green disabled:opacity-50"
               >
                 {q}
               </button>
@@ -428,7 +429,7 @@ export default function ChatPage() {
         </div>
 
         {/* Input */}
-        <div className="border-t border-gray-100 bg-white px-4 py-4 max-w-3xl mx-auto w-full">
+        <div className="mx-auto w-full max-w-3xl border-t border-white/10 bg-[color:var(--surface)] px-4 py-4">
           <form
             onSubmit={(e) => { e.preventDefault(); sendMessage(input); }}
             className="flex gap-3"
@@ -438,12 +439,12 @@ export default function ChatPage() {
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask about your health cover, file a claim, or check your plan…"
               disabled={loading}
-              className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-indigo-400 focus:bg-white focus:outline-none transition-colors disabled:opacity-50"
+              className="kota-input flex-1 px-4 py-3 text-sm text-zinc-100 placeholder:text-zinc-400 disabled:opacity-50"
             />
             <button
               type="submit"
               disabled={loading || !input.trim()}
-              className="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-40 transition-colors"
+              className="kota-btn-primary px-5 py-3 text-sm disabled:opacity-40"
             >
               Send
             </button>

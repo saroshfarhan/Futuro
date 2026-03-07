@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Geist, Inter } from "next/font/google";
 import "./globals.css";
 import { UserProfileProvider } from "@/context/UserProfileContext";
 import Navbar from "@/components/Navbar";
 
 const geist = Geist({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
   title: "Futuro — Your Benefits & Pension Platform",
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${geist.className} bg-gray-50 antialiased`}>
+      <body className={`${geist.variable} ${inter.variable} font-sans antialiased text-foreground bg-kota-dark`}>
         <UserProfileProvider>
           <Navbar />
           <main>{children}</main>

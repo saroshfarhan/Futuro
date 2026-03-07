@@ -16,17 +16,38 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import { api, type PensionResult } from "@/lib/api";
 
 const RISK_OPTIONS = [
-  { key: "conservative", label: "Conservative", rate: "4% growth", color: "text-blue-600", desc: "Lower risk, steady returns" },
-  { key: "moderate", label: "Moderate", rate: "6% growth", color: "text-indigo-600", desc: "Balanced risk and return" },
-  { key: "aggressive", label: "Aggressive", rate: "8% growth", color: "text-purple-600", desc: "Higher risk, higher potential" },
+  {
+    key: "conservative",
+    label: "Conservative",
+    rate: "4% growth",
+    desc: "Lower risk, steady returns",
+    selected: "border-blue-400 bg-blue-500/12",
+    rateTone: "bg-blue-500/15 text-blue-300 border border-blue-400/35",
+  },
+  {
+    key: "moderate",
+    label: "Moderate",
+    rate: "6% growth",
+    desc: "Balanced risk and return",
+    selected: "border-kota-green bg-kota-green/12",
+    rateTone: "bg-kota-green/15 text-kota-green border border-kota-green/35",
+  },
+  {
+    key: "aggressive",
+    label: "Aggressive",
+    rate: "8% growth",
+    desc: "Higher risk, higher potential",
+    selected: "border-amber-400 bg-amber-500/12",
+    rateTone: "bg-amber-500/15 text-amber-300 border border-amber-400/35",
+  },
 ];
 
 const LIFESTYLE_COLORS: Record<string, string> = {
-  "Back to Basics": "from-gray-400 to-gray-600",
+  "Back to Basics": "from-slate-500 to-slate-700",
   "Comfortable Retiree": "from-blue-400 to-blue-600",
-  "Active Explorer": "from-indigo-400 to-indigo-600",
-  "Mediterranean Retiree": "from-amber-400 to-orange-500",
-  "Golden Years": "from-yellow-400 to-amber-500",
+  "Active Explorer": "from-cyan-500 to-blue-700",
+  "Mediterranean Retiree": "from-sky-500 to-indigo-700",
+  "Golden Years": "from-blue-500 to-indigo-700",
 };
 
 function formatEuro(n: number): string {
@@ -55,8 +76,8 @@ function Slider({
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
-        <span className="text-sm text-gray-600">{label}</span>
-        <span className="text-sm font-bold text-gray-900">{format(value)}</span>
+        <span className="text-sm text-slate-600">{label}</span>
+        <span className="text-sm font-bold text-slate-900">{format(value)}</span>
       </div>
       <input
         type="range"
@@ -65,9 +86,9 @@ function Slider({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full h-2 rounded-full appearance-none bg-gray-200 cursor-pointer accent-indigo-600"
+        className="h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-blue-600"
       />
-      <div className="flex justify-between text-xs text-gray-400 mt-1">
+      <div className="mt-1 flex justify-between text-xs text-slate-400">
         <span>{format(min)}</span>
         <span>{format(max)}</span>
       </div>
@@ -126,14 +147,14 @@ export default function PensionPage() {
     : [];
 
   const lifestyleBg = result
-    ? LIFESTYLE_COLORS[result.lifestyle_bucket.title] || "from-indigo-400 to-purple-500"
-    : "from-indigo-400 to-purple-500";
+    ? LIFESTYLE_COLORS[result.lifestyle_bucket.title] || "from-sky-500 to-indigo-700"
+    : "from-sky-500 to-indigo-700";
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Pension Journey</h1>
-        <p className="text-gray-600">
+        <h1 className="kota-section-title mb-2 text-3xl font-bold">Your Pension Journey</h1>
+        <p className="text-slate-600">
           {profile.age && profile.salary
             ? "We've pre-filled this from your chat profile. Adjust the sliders to explore."
             : "Tell us about yourself below — or chat first to auto-fill everything."}
@@ -143,8 +164,8 @@ export default function PensionPage() {
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Controls column */}
         <div className="space-y-5">
-          <div className="rounded-2xl bg-white border border-gray-200 p-5 shadow-sm">
-            <h2 className="text-sm font-semibold text-gray-700 mb-5">Your Details</h2>
+          <div className="kota-panel p-5">
+            <h2 className="mb-5 text-sm font-semibold text-slate-700">Your Details</h2>
             <div className="space-y-6">
               <Slider
                 label="Current Age"
@@ -186,8 +207,8 @@ export default function PensionPage() {
           </div>
 
           {/* Risk selector */}
-          <div className="rounded-2xl bg-white border border-gray-200 p-5 shadow-sm">
-            <h2 className="text-sm font-semibold text-gray-700 mb-3">Investment Strategy</h2>
+          <div className="kota-panel p-5">
+            <h2 className="mb-3 text-sm font-semibold text-zinc-100">Investment Strategy</h2>
             <div className="space-y-2">
               {RISK_OPTIONS.map((r) => (
                 <button
@@ -195,28 +216,31 @@ export default function PensionPage() {
                   onClick={() => setRisk(r.key)}
                   className={`w-full rounded-xl border-2 p-3 text-left transition-all ${
                     risk === r.key
-                      ? "border-indigo-400 bg-indigo-50"
-                      : "border-gray-200 bg-gray-50 hover:border-gray-300"
+                      ? `${r.selected} shadow-[0_0_0_1px_rgba(255,255,255,0.04)]`
+                      : "border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/8"
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className={`text-sm font-medium ${risk === r.key ? "text-indigo-700" : "text-gray-700"}`}>
+                    <span className={`text-sm font-medium ${risk === r.key ? "text-zinc-100" : "text-zinc-200"}`}>
                       {r.label}
                     </span>
-                    <span className={`text-xs font-semibold ${r.color}`}>{r.rate}</span>
+                    <span className={`rounded-md px-2 py-0.5 text-xs font-semibold ${r.rateTone}`}>{r.rate}</span>
                   </div>
-                  <p className="text-xs text-gray-500 mt-0.5">{r.desc}</p>
+                  <p className="mt-0.5 text-xs text-zinc-400">{r.desc}</p>
                 </button>
               ))}
             </div>
+            <p className="mt-3 text-[11px] text-zinc-500">
+              Risk scale: Conservative (lower volatility) to Aggressive (higher volatility).
+            </p>
           </div>
 
           {/* Tax relief badge */}
           {result && (
-            <div className="rounded-2xl bg-emerald-50 border border-emerald-200 p-4">
-              <p className="text-xs font-semibold text-emerald-700 mb-1">Irish Tax Relief</p>
-              <p className="text-2xl font-bold text-emerald-800">{result.tax_relief_rate_pct}%</p>
-              <p className="text-xs text-emerald-600 mt-1">
+            <div className="rounded-2xl border border-cyan-200 bg-cyan-50 p-4">
+              <p className="mb-1 text-xs font-semibold text-cyan-800">Irish Tax Relief</p>
+              <p className="text-2xl font-bold text-cyan-900">{result.tax_relief_rate_pct}%</p>
+              <p className="mt-1 text-xs text-cyan-700">
                 Your contribution costs you just <strong>€{result.monthly_net_cost}/month</strong> after tax relief.
               </p>
             </div>
@@ -233,7 +257,7 @@ export default function PensionPage() {
                 initial={{ opacity: 0, scale: 0.97 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.97 }}
-                className={`rounded-2xl bg-linear-to-br ${lifestyleBg} p-6 text-white shadow-lg`}
+                className={`kota-panel-strong bg-linear-to-br ${lifestyleBg} p-6 text-white`}
               >
                 <div className="flex items-start justify-between mb-4">
                   <div>
@@ -279,8 +303,8 @@ export default function PensionPage() {
 
           {/* Growth chart */}
           {result && chartData.length > 0 && (
-            <div className="rounded-2xl bg-white border border-gray-200 p-5 shadow-sm">
-              <h2 className="text-sm font-semibold text-gray-700 mb-4">Pension Pot Growth</h2>
+            <div className="kota-panel p-5">
+              <h2 className="mb-4 text-sm font-semibold text-slate-700">Pension Pot Growth</h2>
               <ResponsiveContainer width="100%" height={220}>
                 <LineChart data={chartData} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -302,16 +326,16 @@ export default function PensionPage() {
                   />
                   <ReferenceLine
                     x={retirementAge}
-                    stroke="#6366f1"
+                    stroke="#1570ef"
                     strokeDasharray="4 4"
-                    label={{ value: "Retire", position: "top", fontSize: 11, fill: "#6366f1" }}
+                    label={{ value: "Retire", position: "top", fontSize: 11, fill: "#1570ef" }}
                   />
                   <Line
                     type="monotone"
                     dataKey="pot"
-                    stroke="#6366f1"
+                    stroke="#1570ef"
                     strokeWidth={2.5}
-                    dot={{ fill: "#6366f1", r: 4 }}
+                    dot={{ fill: "#1570ef", r: 4 }}
                     activeDot={{ r: 6 }}
                   />
                 </LineChart>
@@ -322,63 +346,63 @@ export default function PensionPage() {
           {/* Latte factor + peer comparison */}
           {result && (
             <div className="grid md:grid-cols-2 gap-4">
-              <div className="rounded-2xl bg-white border border-gray-200 p-5 shadow-sm">
-                <h3 className="text-sm font-semibold text-gray-700 mb-3">The +1% Impact</h3>
-                <p className="text-gray-500 text-xs mb-3">
+              <div className="kota-panel p-5">
+                <h3 className="mb-3 text-sm font-semibold text-slate-700">The +1% Impact</h3>
+                <p className="mb-3 text-xs text-slate-500">
                   What does contributing 1% more actually cost you per day, after tax relief?
                 </p>
-                <div className="text-3xl font-bold text-gray-900 mb-1">
+                <div className="mb-1 text-3xl font-bold text-slate-900">
                   €{result.latte_factor_1pct.daily_cost.toFixed(2)}
-                  <span className="text-base font-normal text-gray-500">/day</span>
+                  <span className="text-base font-normal text-slate-500">/day</span>
                 </div>
-                <p className="text-sm text-indigo-600 font-medium">
+                <p className="text-sm font-medium text-blue-700">
                   {result.latte_factor_1pct.comparison}
                 </p>
-                <p className="text-xs text-gray-400 mt-2">
+                <p className="mt-2 text-xs text-slate-400">
                   That 1% extra = €{result.latte_factor_1pct.annual_gross_extra.toLocaleString()}/yr gross, just €{result.latte_factor_1pct.annual_net_extra.toLocaleString()}/yr after {result.latte_factor_1pct.tax_relief_pct}% tax relief.
                 </p>
               </div>
 
-              <div className="rounded-2xl bg-white border border-gray-200 p-5 shadow-sm">
-                <h3 className="text-sm font-semibold text-gray-700 mb-3">How You Compare</h3>
-                <p className="text-gray-500 text-xs mb-3">
+              <div className="kota-panel p-5">
+                <h3 className="mb-3 text-sm font-semibold text-slate-700">How You Compare</h3>
+                <p className="mb-3 text-xs text-slate-500">
                   vs. Irish peers in their {result.peer_comparison.age_group}
                 </p>
                 <div className="flex items-end gap-4 mb-3">
                   <div>
-                    <div className="text-2xl font-bold text-indigo-600">{result.peer_comparison.your_rate}%</div>
-                    <div className="text-xs text-gray-500">Your rate</div>
+                    <div className="text-2xl font-bold text-blue-700">{result.peer_comparison.your_rate}%</div>
+                    <div className="text-xs text-slate-500">Your rate</div>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-gray-400">{result.peer_comparison.peer_average_rate}%</div>
-                    <div className="text-xs text-gray-500">Peer average</div>
+                    <div className="text-2xl font-bold text-slate-400">{result.peer_comparison.peer_average_rate}%</div>
+                    <div className="text-xs text-slate-500">Peer average</div>
                   </div>
                   <div className="ml-auto text-right">
-                    <div className="text-xl font-bold text-emerald-600">Top {100 - result.peer_comparison.percentile}%</div>
-                    <div className="text-xs text-gray-500">of savers</div>
+                    <div className="text-xl font-bold text-teal-600">Top {100 - result.peer_comparison.percentile}%</div>
+                    <div className="text-xs text-slate-500">of savers</div>
                   </div>
                 </div>
-                <p className="text-xs text-gray-600 leading-relaxed">{result.peer_comparison.message}</p>
+                <p className="text-xs leading-relaxed text-slate-600">{result.peer_comparison.message}</p>
               </div>
             </div>
           )}
 
           {/* Loading state */}
           {loading && !result && (
-            <div className="flex items-center justify-center h-48 rounded-2xl bg-white border border-gray-200">
-              <div className="text-gray-400 text-sm">Calculating your pension…</div>
+            <div className="kota-panel flex h-48 items-center justify-center">
+              <div className="text-sm text-slate-400">Calculating your pension…</div>
             </div>
           )}
 
           {/* CTA */}
-          <div className="rounded-2xl bg-gray-900 p-5 text-white">
+          <div className="kota-panel-strong bg-linear-to-br from-[#0f2747] to-[#173b66] p-5 text-white">
             <p className="font-semibold mb-1">Want a more personalised projection?</p>
-            <p className="text-gray-400 text-sm mb-3">
+            <p className="mb-3 text-sm text-blue-100/80">
               Chat with Futuro — mention your salary and retirement plans, and we&apos;ll fill this in automatically.
             </p>
             <a
               href="/chat"
-              className="inline-block rounded-lg bg-white px-4 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-100 transition-colors"
+              className="kota-btn-secondary inline-block px-4 py-2 text-sm text-blue-800"
             >
               Open AI assistant →
             </a>

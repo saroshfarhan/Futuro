@@ -2,8 +2,6 @@
 
 An AI-powered health insurance and pension planning platform built for the Irish Life Health hackathon.
 
-![Agent Architecture](./Agent_architecture.png)
-
 ---
 
 ## What We Built

@@ -28,7 +28,7 @@ const PROFILE_LABELS: Record<string, string> = {
 };
 
 function formatProfileValue(key: string, val: unknown): string {
-  if (key === "salary") return `€${(val as number).toLocaleString()}/yr`;
+  if (key === "salary") return `€${(val as number).toLocaleString('en-IE')}/yr`;
   if (key === "family_size") {
     const labels: Record<number, string> = { 1: "Single", 2: "Couple", 3: "Couple + 1", 4: "Couple + 2", 5: "Family of 5+" };
     return labels[val as number] || `${val} people`;

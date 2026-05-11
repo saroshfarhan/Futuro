@@ -183,7 +183,7 @@ export default function PensionPage() {
                 max={200000}
                 step={1000}
                 onChange={setSalary}
-                format={(v) => `€${v.toLocaleString()}`}
+                format={(v) => `€${v.toLocaleString('en-IE')}`}
               />
               <Slider
                 label="Contribution Rate"
@@ -266,7 +266,7 @@ export default function PensionPage() {
                     <p className="text-white/80 mt-1 text-sm">{result.lifestyle_bucket.description}</p>
                   </div>
                   <div className="text-right shrink-0">
-                    <div className="text-3xl font-bold">€{result.total_monthly_income.toLocaleString()}</div>
+                    <div className="text-3xl font-bold">€{result.total_monthly_income.toLocaleString('en-IE')}</div>
                     <div className="text-white/70 text-sm">per month</div>
                   </div>
                 </div>
@@ -274,11 +274,11 @@ export default function PensionPage() {
                 <div className="grid grid-cols-3 gap-3 mb-4">
                   <div className="rounded-xl bg-white/15 p-3">
                     <div className="text-white/60 text-xs mb-1">From your pot</div>
-                    <div className="font-bold text-lg">€{result.monthly_from_pot.toLocaleString()}/mo</div>
+                    <div className="font-bold text-lg">€{result.monthly_from_pot.toLocaleString('en-IE')}/mo</div>
                   </div>
                   <div className="rounded-xl bg-white/15 p-3">
                     <div className="text-white/60 text-xs mb-1">State pension</div>
-                    <div className="font-bold text-lg">€{result.monthly_state_pension.toLocaleString()}/mo</div>
+                    <div className="font-bold text-lg">€{result.monthly_state_pension.toLocaleString('en-IE')}/mo</div>
                   </div>
                   <div className="rounded-xl bg-white/15 p-3">
                     <div className="text-white/60 text-xs mb-1">Pot size</div>
@@ -320,7 +320,7 @@ export default function PensionPage() {
                     tickFormatter={(v) => formatEuro(v)}
                   />
                   <Tooltip
-                    formatter={(v) => [`€${Number(v).toLocaleString()}`, "Pension pot"]}
+                    formatter={(v) => [`€${Number(v).toLocaleString('en-IE')}`, "Pension pot"]}
                     labelFormatter={(l) => `Age ${l}`}
                     contentStyle={{ borderRadius: "8px", border: "1px solid #e5e7eb", fontSize: "12px" }}
                   />
@@ -359,7 +359,7 @@ export default function PensionPage() {
                   {result.latte_factor_1pct.comparison}
                 </p>
                 <p className="mt-2 text-xs text-slate-400">
-                  That 1% extra = €{result.latte_factor_1pct.annual_gross_extra.toLocaleString()}/yr gross, just €{result.latte_factor_1pct.annual_net_extra.toLocaleString()}/yr after {result.latte_factor_1pct.tax_relief_pct}% tax relief.
+                  That 1% extra = €{result.latte_factor_1pct.annual_gross_extra.toLocaleString('en-IE')}/yr gross, just €{result.latte_factor_1pct.annual_net_extra.toLocaleString('en-IE')}/yr after {result.latte_factor_1pct.tax_relief_pct}% tax relief.
                 </p>
               </div>
 

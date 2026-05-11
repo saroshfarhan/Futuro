@@ -91,7 +91,7 @@ export default function HomePage() {
             <p className="text-sm text-zinc-200">
               <span className="font-semibold">Your profile is {profileCompletion}% complete.</span>{" "}
               {profile.age && `Age ${profile.age}`}{profile.age && profile.salary ? " · " : ""}
-              {profile.salary && `€${profile.salary.toLocaleString()}/yr`}
+              {profile.salary && `€${profile.salary.toLocaleString('en-IE')}/yr`}
               {" — "}All your data is pre-filled across all three tools.
             </p>
             <Link href="/chat" className="text-sm font-medium text-kota-green hover:text-white">
